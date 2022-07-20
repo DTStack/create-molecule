@@ -23,8 +23,11 @@ function init() {
 
   const useYarn = isUsingYarn();
 
+  const commandLine = useYarn
+    ? "npx create-react-app"
+    : "yarn create react-app";
   execSync(
-    `${useYarn ? "yarn create" : "npx"} create-react-app ${projectName} ${
+    `${commandLine} ${projectName} ${
       isTypeScript ? "--template typescript" : ""
     }`,
     {
