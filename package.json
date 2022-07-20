@@ -1,0 +1,33 @@
+{
+  "name": "create-molecule",
+  "version": "1.0.0",
+  "description": "Create Molecule Application with create-react-app.",
+  "keywords": [
+    "molecule"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/DTStack/create-molecule.git"
+  },
+  "bugs": {
+    "url": "https://github.com/DTStack/create-molecule/issues"
+  },
+  "bin": {
+    "create-molecule": "bin/index.js"
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "chalk": "^4.1.2",
+    "commander": "^9.4.0"
+  },
+  "devDependencies": {
+    "@types/node": "^18.0.6"
+  }
+}
