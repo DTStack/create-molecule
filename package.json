@@ -13,7 +13,7 @@
     "url": "https://github.com/DTStack/create-molecule/issues"
   },
   "bin": {
-    "molecule": "bin/index.js"
+    "create": "bin/index.js"
   },
   "files": [
     "dist"

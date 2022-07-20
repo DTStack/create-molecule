@@ -62,13 +62,13 @@ function init() {
 
   console.log("You can begin by typing:");
   console.log("");
-  console.log(`     ${chalk.cyan("cd")} my-app`);
+  console.log(`     ${chalk.cyan("cd")} ${projectName}`);
   console.log(`     ${chalk.cyan(useYarn ? "yarn" : "npm run")} start`);
   console.log("");
 
   console.log("Or if you want to review the diff of lines:");
   console.log("");
-  console.log(`     ${chalk.cyan("cd")} my-app`);
+  console.log(`     ${chalk.cyan("cd")} ${projectName}`);
   console.log(
     `     ${chalk.cyan(`git diff src/${isTypeScript ? "App.tsx" : "App.js"}`)}`
   );
