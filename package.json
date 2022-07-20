@@ -1,5 +1,5 @@
 {
-  "name": "@dtinsight/create-molecule",
+  "name": "@dtinsight/create",
   "version": "1.0.0",
   "description": "Create Molecule Application with create-react-app.",
   "keywords": [
@@ -13,7 +13,7 @@
     "url": "https://github.com/DTStack/create-molecule/issues"
   },
   "bin": {
-    "create": "bin/index.js"
+    "molecule": "bin/index.js"
   },
   "files": [
     "dist"
