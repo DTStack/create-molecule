@@ -1,5 +1,6 @@
 import { execSync, fork } from "child_process";
 import * as chalk from "chalk";
+import rimraf from "rimraf";
 import { program } from "commander";
 import { join, resolve } from "path";
 
@@ -26,62 +27,75 @@ function init() {
   const commandLine = useYarn
     ? "npx create-react-app"
     : "yarn create react-app";
-  execSync(
-    `${commandLine} ${projectName} ${
-      isTypeScript ? "--template typescript" : ""
-    }`,
-    {
-      stdio: "inherit",
-    }
-  );
 
   const projectPath = resolve(projectName);
-  execSync(`${useYarn ? "yarn" : "npm"} add @dtinsight/molecule@latest`, {
-    cwd: projectPath,
-    stdio: "inherit",
-  });
 
-  const forked = fork(join(__dirname, "file.js"));
-  forked.send({ cwd: projectPath, typescript: isTypeScript });
+  try {
+    execSync(
+      `${commandLine} ${projectName} ${
+        isTypeScript ? "--template typescript" : ""
+      }`,
+      {
+        stdio: "inherit",
+      }
+    );
 
-  console.log(
-    `${chalk.greenBright(
-      "Success"
-    )}! Created ${projectName} at ${projectPath} by create-react-app`
-  );
-  console.log("We rewrote several files:");
-  console.log("");
-  console.log(
-    ` * ${join(
-      projectPath,
-      "src",
-      isTypeScript ? "App.tsx" : "App.js"
-    )} ${chalk.cyan("and")}`
-  );
-  console.log(
-    ` * ${join(projectPath, "src", isTypeScript ? "index.tsx" : "index.js")}.`
-  );
-  console.log("");
+    execSync(`${useYarn ? "yarn" : "npm"} add @dtinsight/molecule@latest`, {
+      cwd: projectPath,
+      stdio: "inherit",
+    });
 
-  console.log("You can begin by typing:");
-  console.log("");
-  console.log(`     ${chalk.cyan("cd")} ${projectName}`);
-  console.log(`     ${chalk.cyan(useYarn ? "yarn" : "npm run")} start`);
-  console.log("");
+    const forked = fork(join(__dirname, "file.js"));
+    forked.send({ cwd: projectPath, typescript: isTypeScript });
 
-  console.log("Or if you want to review the diff of lines:");
-  console.log("");
-  console.log(`     ${chalk.cyan("cd")} ${projectName}`);
-  console.log(
-    `     ${chalk.cyan(`git diff src/${isTypeScript ? "App.tsx" : "App.js"}`)}`
-  );
-  console.log(
-    `     ${chalk.cyan(
-      `git diff src/${isTypeScript ? "index.tsx" : "index.js"}`
-    )}`
-  );
-  console.log("");
-  console.log("Happy coding!😊");
+    console.log(
+      `${chalk.greenBright(
+        "Success"
+      )}! Created ${projectName} at ${projectPath} by create-react-app`
+    );
+    console.log("We rewrote several files:");
+    console.log("");
+    console.log(
+      ` * ${join(
+        projectPath,
+        "src",
+        isTypeScript ? "App.tsx" : "App.js"
+      )} ${chalk.cyan("and")}`
+    );
+    console.log(
+      ` * ${join(projectPath, "src", isTypeScript ? "index.tsx" : "index.js")}.`
+    );
+    console.log("");
+
+    console.log("You can begin by typing:");
+    console.log("");
+    console.log(`     ${chalk.cyan("cd")} ${projectName}`);
+    console.log(`     ${chalk.cyan(useYarn ? "yarn" : "npm run")} start`);
+    console.log("");
+
+    console.log("Or if you want to review the diff of lines:");
+    console.log("");
+    console.log(`     ${chalk.cyan("cd")} ${projectName}`);
+    console.log(
+      `     ${chalk.cyan(
+        `git diff src/${isTypeScript ? "App.tsx" : "App.js"}`
+      )}`
+    );
+    console.log(
+      `     ${chalk.cyan(
+        `git diff src/${isTypeScript ? "index.tsx" : "index.js"}`
+      )}`
+    );
+    console.log("");
+    console.log("Happy coding!😊");
+  } catch (err) {
+    console.error(err);
+    rimraf(projectPath, () => {
+      process.exit(1);
+    });
+  }
 }
+
+process.on("SIGINT", function () {});
 
 export { init };
