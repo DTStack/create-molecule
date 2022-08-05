@@ -1,5 +1,5 @@
 import { execSync, fork } from "child_process";
-import * as chalk from "chalk";
+import chalk from "chalk";
 import rimraf from "rimraf";
 import { program } from "commander";
 import { join, resolve } from "path";
