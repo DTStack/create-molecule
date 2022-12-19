@@ -22,17 +22,28 @@
     "node": ">=10"
   },
   "scripts": {
-    "build": "tsc",
-    "dev": "tsc --watch"
+    "build": "rimraf ./dist && tsc && copy-files-from-to",
+    "dev": "rimraf ./dist && tsc --watch && copy-files-from-to"
   },
   "license": "MIT",
   "dependencies": {
     "chalk": "^4.1.2",
-    "commander": "^9.4.0",
-    "rimraf": "^3.0.2"
+    "mustache": "^4.2.0",
+    "ora": "^5.4.1",
+    "prompts": "^2.4.2"
   },
   "devDependencies": {
+    "@types/mustache": "^4.2.2",
     "@types/node": "^18.0.6",
-    "@types/rimraf": "^3.0.2"
-  }
+    "@types/prompts": "^2.4.2",
+    "copy-files-from-to": "^3.6.0",
+    "rimraf": "^3.0.2",
+    "typescript": "^4.9.4"
+  },
+  "copyFiles": [
+    {
+      "from": "src/templates/**/*.*",
+      "to": "dist/templates"
+    }
+  ]
 }

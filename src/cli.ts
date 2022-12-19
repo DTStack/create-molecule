@@ -1,101 +1,92 @@
-import { execSync, fork } from "child_process";
-import chalk from "chalk";
-import rimraf from "rimraf";
-import { program } from "commander";
-import { join, resolve } from "path";
+import prompts from "prompts";
+import path from "path";
+import fs from "fs";
+import mustache from "mustache";
+import ora from "ora";
 
-let projectName = "";
-let isTypeScript = false;
+(async () => {
+  const { applicationName, template } = await prompts([
+    {
+      type: "text",
+      name: "applicationName",
+      message: "What's the name of application?",
+      initial: "myapp",
+    },
+    {
+      type: "select",
+      name: "template",
+      message: "Select a template for your application",
+      choices: [
+        {
+          title: "Vite",
+          value: "vite",
+        },
+      ],
+      initial: 0,
+    },
+  ]);
 
-function isUsingYarn() {
-  return (process.env.npm_config_user_agent || "").indexOf("yarn") === 0;
-}
+  const root = path.resolve(process.cwd());
 
-function init() {
-  program
-    .command("create-molecule")
-    .arguments("<project-directory>")
-    .option("-t --typescript", "create an TypeScript Project")
-    .action((name, options) => {
-      projectName = name;
-      isTypeScript = options?.typescript || false;
-    })
-    .parse(process.argv);
+  const spinner = ora("Loading Making Directory").start();
 
-  const useYarn = isUsingYarn();
+  fs.mkdirSync(path.join(root, applicationName), { recursive: true });
 
-  const commandLine = useYarn
-    ? "npx create-react-app"
-    : "yarn create react-app";
+  const templatePath = path.join(
+    __dirname,
+    "..",
+    "src",
+    "templates",
+    `template-${template}`
+  );
+  const staffs = fs.readdirSync(templatePath);
 
-  const projectPath = resolve(projectName);
-
-  try {
-    execSync(
-      `${commandLine} ${projectName} ${
-        isTypeScript ? "--template typescript" : ""
-      }`,
-      {
-        stdio: "inherit",
+  staffs.forEach((staff) => {
+    if (staff.includes(".")) {
+      const file = staff;
+      if (staff.endsWith(".tpl")) {
+        const output = mustache.render(
+          fs.readFileSync(path.join(templatePath, file), "utf-8"),
+          { applicationName }
+        );
+        spinner.text = `Loading Coping ${file.slice(0, file.lastIndexOf("."))}`;
+        fs.writeFileSync(
+          path.join(
+            root,
+            applicationName,
+            file.slice(0, file.lastIndexOf("."))
+          ),
+          output
+        );
+      } else {
+        spinner.text = `Loading Coping ${file}`;
+        fs.copyFileSync(
+          path.join(templatePath, file),
+          path.join(root, applicationName, file)
+        );
       }
-    );
+    } else {
+      const folder = staff;
+      const src = fs.readdirSync(path.join(templatePath, folder));
 
-    execSync(`${useYarn ? "yarn" : "npm"} add @dtinsight/molecule@latest`, {
-      cwd: projectPath,
-      stdio: "inherit",
-    });
+      fs.mkdirSync(path.join(root, applicationName, folder), {
+        recursive: true,
+      });
 
-    const forked = fork(join(__dirname, "file.js"));
-    forked.send({ cwd: projectPath, typescript: isTypeScript });
+      src.forEach((file) => {
+        spinner.text = `Loading Coping ${file}`;
+        fs.copyFileSync(
+          path.join(templatePath, folder, file),
+          path.join(root, applicationName, folder, file)
+        );
+      });
+    }
+  });
 
-    console.log(
-      `${chalk.greenBright(
-        "Success"
-      )}! Created ${projectName} at ${projectPath} by create-react-app`
-    );
-    console.log("We rewrote several files:");
-    console.log("");
-    console.log(
-      ` * ${join(
-        projectPath,
-        "src",
-        isTypeScript ? "App.tsx" : "App.js"
-      )} ${chalk.cyan("and")}`
-    );
-    console.log(
-      ` * ${join(projectPath, "src", isTypeScript ? "index.tsx" : "index.js")}.`
-    );
-    console.log("");
-
-    console.log("You can begin by typing:");
-    console.log("");
-    console.log(`     ${chalk.cyan("cd")} ${projectName}`);
-    console.log(`     ${chalk.cyan(useYarn ? "yarn" : "npm run")} start`);
-    console.log("");
-
-    console.log("Or if you want to review the diff of lines:");
-    console.log("");
-    console.log(`     ${chalk.cyan("cd")} ${projectName}`);
-    console.log(
-      `     ${chalk.cyan(
-        `git diff src/${isTypeScript ? "App.tsx" : "App.js"}`
-      )}`
-    );
-    console.log(
-      `     ${chalk.cyan(
-        `git diff src/${isTypeScript ? "index.tsx" : "index.js"}`
-      )}`
-    );
-    console.log("");
-    console.log("Happy coding!😊");
-  } catch (err) {
-    console.error(err);
-    rimraf(projectPath, () => {
-      process.exit(1);
-    });
-  }
-}
-
-process.on("SIGINT", function () {});
-
-export { init };
+  spinner.succeed(
+    `Downloading application successfully at ${path.join(
+      root,
+      applicationName
+    )}`
+  );
+})();

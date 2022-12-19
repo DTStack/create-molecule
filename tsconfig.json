@@ -9,7 +9,9 @@
     "noUnusedParameters": true,
     "target": "es2019",
     "outDir": "./dist",
-    "rootDir": "./src"
+    "rootDir": "./src",
+    "skipLibCheck": true
   },
-  "include": ["src"]
+  "include": ["src", "node_modules/ora"],
+  "exclude": ["src/templates"]
 }
