@@ -35,7 +35,7 @@ import ora from "ora";
   const templatePath = path.join(
     __dirname,
     "..",
-    "src",
+    "dist", 
     "templates",
     `template-${template}`
   );
