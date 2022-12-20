@@ -3,8 +3,17 @@ import path from "path";
 import fs from "fs";
 import mustache from "mustache";
 import ora from "ora";
+import chalk from "chalk";
 
 (async () => {
+  const pkg = JSON.parse(
+    fs.readFileSync(path.resolve(__dirname, "../package.json"), "utf-8")
+  );
+  console.log(
+    chalk.blueBright("[INFO]: "),
+    chalk.yellowBright(pkg.name, `v${pkg.version}`)
+  );
+
   const { applicationName, template } = await prompts([
     {
       type: "text",
@@ -35,7 +44,7 @@ import ora from "ora";
   const templatePath = path.join(
     __dirname,
     "..",
-    "dist", 
+    "dist",
     "templates",
     `template-${template}`
   );
