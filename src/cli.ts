@@ -39,7 +39,18 @@ import chalk from "chalk";
 
   const spinner = ora("Loading Making Directory").start();
 
-  fs.mkdirSync(path.join(root, applicationName), { recursive: true });
+  const targetPath = path.join(root, applicationName);
+
+  if (fs.existsSync(targetPath)) {
+    spinner.fail(
+      chalk.redBright(
+        `${targetPath} already exist, please remove it or rename your application name`
+      )
+    );
+    return;
+  }
+
+  fs.mkdirSync(targetPath, { recursive: true });
 
   const templatePath = path.join(
     __dirname,
