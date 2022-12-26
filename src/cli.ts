@@ -30,6 +30,10 @@ import chalk from "chalk";
           title: "Vite",
           value: "vite",
         },
+        {
+          title: "create-react-app",
+          value: "cra",
+        },
       ],
       initial: 0,
     },
