@@ -19,7 +19,7 @@
   },
   "devDependencies": {
     "@types/testing-library__jest-dom": "^5.14.5"
-  }
+  },
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
