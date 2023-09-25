@@ -32,6 +32,9 @@
     "ora": "^5.4.1",
     "prompts": "^2.4.2"
   },
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org/"
+  },
   "devDependencies": {
     "@types/mustache": "^4.2.2",
     "@types/node": "^18.0.6",
